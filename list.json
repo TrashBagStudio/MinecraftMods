@@ -1,0 +1,40 @@
+{
+  "mods": [
+    {
+      "name": "Test Mod",
+      "desc": "Cool mod description",
+      "icon": "",
+      "url": "https://example.com/file.zip"
+    },
+    {
+      "name": "Test Mod",
+      "desc": "Cool mod description",
+      "icon": "",
+      "url": "https://example.com/file.zip"
+    },
+    {
+      "name": "Test Mod",
+      "desc": "Cool mod description",
+      "icon": "",
+      "url": "https://example.com/file.zip"
+    },
+    {
+      "name": "Test Mod",
+      "desc": "Cool mod description",
+      "icon": "",
+      "url": "https://example.com/file.zip"
+    },
+    {
+      "name": "Test Mod",
+      "desc": "Cool mod description",
+      "icon": "",
+      "url": "https://example.com/file.zip"
+    },
+    {
+      "name": "Test Mod",
+      "desc": "Cool mod description",
+      "icon": "",
+      "url": "https://example.com/file.zip"
+    },
+  ]
+}
