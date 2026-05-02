@@ -1,0 +1,22 @@
+{
+  "mods": [
+    {
+      "name": "Test Mod",
+      "desc": "Cool mod description",
+      "icon": "",
+      "url": "https://example.com/file.zip"
+    },
+    {
+      "name": "Adventure Expansion",
+      "desc": "Adds new biomes, mobs and quests",
+      "icon": "",
+      "url": "https://example.com/adventure.zip"
+    },
+    {
+      "name": "Performance Boost",
+      "desc": "Optimizes game performance and reduces lag",
+      "icon": "",
+      "url": "https://example.com/performance.zip"
+    }
+  ]
+}
