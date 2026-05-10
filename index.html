@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aero Pack</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#07090d;
+    color:white;
+    padding:30px;
+}
+
+/* glow */
+
+body::before,
+body::after{
+    content:"";
+    position:fixed;
+    width:600px;
+    height:600px;
+    filter:blur(120px);
+    z-index:-1;
+}
+
+body::before{
+    top:-200px;
+    left:-200px;
+    background:rgba(255,50,50,0.25);
+}
+
+body::after{
+    bottom:-200px;
+    right:-200px;
+    background:rgba(255,0,60,0.18);
+}
+
+/* hero */
+
+.hero{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.hero h1{
+    font-size:52px;
+    font-weight:800;
+}
+
+.white{color:white;}
+.red{color:#ff3b3b;}
+
+.pack-row{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin-top:10px;
+}
+
+.pack-name{
+    color:#cfcfcf;
+    font-size:16px;
+}
+
+/* grid */
+
+.mods-grid{
+    max-width:1250px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+
+/* card */
+
+.mod-card{
+    display:flex;
+    gap:14px;
+    padding:14px;
+
+    border-radius:18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+
+    transition:0.2s;
+}
+
+.mod-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(255,80,80,0.25);
+}
+
+/* image */
+
+.mod-image{
+    width:78px;
+    height:78px;
+    border-radius:14px;
+    object-fit:cover;
+}
+
+/* content */
+
+.mod-content{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+.mod-title{
+    font-size:19px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.mod-description{
+    font-size:13px;
+    color:#b8b8b8;
+    margin-bottom:10px;
+}
+
+/* meta + buttons */
+
+.bottom-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* meta */
+
+.meta{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    font-size:12px;
+    color:#d0d0d0;
+}
+
+.meta-item{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+/* buttons */
+
+.buttons{
+    display:flex;
+    gap:8px;
+}
+
+.btn{
+    padding:8px 10px;
+    font-size:12px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.btn-open{
+    background:rgba(255,255,255,0.06);
+    color:white;
+}
+
+.btn-download{
+    background:#ff3b3b;
+    color:white;
+}
+
+/* mobile */
+
+@media(max-width:900px){
+    .mods-grid{grid-template-columns:1fr;}
+}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+
+    <h1>
+        <span class="white">Сборка которую </span>
+        <span class="red">ты искал</span>
+    </h1>
+
+    <div class="pack-row">
+
+        <div class="pack-name" id="packName">Loading...</div>
+
+        <a id="packDownload" class="btn btn-download" href="#">
+            Скачать сборку
+        </a>
+
+    </div>
+
+</div>
+
+<div class="mods-grid" id="mods"></div>
+
+<script>
+
+/* ===== ICONS (ТЫ ВСТАВИШЬ СВОИ URL) ===== */
+
+const ICONS = {
+    user: "https://raw.githubusercontent.com/TrashBagStudio/MinecraftMods/refs/heads/main/Untitled%20(93).png",
+    download: "https://raw.githubusercontent.com/TrashBagStudio/MinecraftMods/refs/heads/main/Untitled%20(94).png",
+    type: "https://raw.githubusercontent.com/TrashBagStudio/MinecraftMods/refs/heads/main/Untitled%20(95).png"
+};
+
+/* ===== GITHUB ===== */
+
+const GITHUB_RAW_URL =
+"https://raw.githubusercontent.com/TrashBagStudio/MinecraftMods/refs/heads/main/mod.txt";
+
+const container = document.getElementById("mods");
+const packNameEl = document.getElementById("packName");
+const packDownloadEl = document.getElementById("packDownload");
+
+/* ===== TRANSLATE ===== */
+
+async function translate(text){
+    try{
+        const r = await fetch(
+            `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=ru&dt=t&q=${encodeURIComponent(text)}`
+        );
+        const d = await r.json();
+        return d[0].map(x=>x[0]).join("");
+    }catch{return text;}
+}
+
+/* ===== MOD ===== */
+
+async function getMod(url){
+
+    const slug = url.split("/").pop();
+
+    const r = await fetch(`https://api.modrinth.com/v2/project/${slug}`);
+    const d = await r.json();
+
+    return{
+        title:d.title,
+        desc:await translate(d.description||""),
+        image:d.icon_url,
+        downloads:d.downloads,
+        followers:d.followers,
+        types:(d.categories || []).join(", "),
+        url
+    };
+}
+
+/* ===== CARD ===== */
+
+function card(m){
+
+    const el=document.createElement("div");
+    el.className="mod-card";
+
+    el.innerHTML=`
+        <img class="mod-image" src="${m.image}">
+
+        <div class="mod-content">
+
+            <div class="mod-title">${m.title}</div>
+
+            <div class="mod-description">${m.desc}</div>
+
+            <div class="bottom-row">
+
+                <div class="meta">
+
+                    <div class="meta-item">
+                        <img src="${ICONS.user}" width="14">
+                        ${m.followers}
+                    </div>
+
+                    <div class="meta-item">
+                        <img src="${ICONS.download}" width="14">
+                        ${m.downloads}
+                    </div>
+
+                    <div class="meta-item">
+                        <img src="${ICONS.type}" width="14">
+                        ${m.types}
+                    </div>
+
+                </div>
+
+                <div class="buttons">
+                    <a class="btn btn-open" href="${m.url}" target="_blank">Открыть</a>
+                    <a class="btn btn-download" href="${m.url}/version" target="_blank">Скачать</a>
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    container.appendChild(el);
+}
+
+/* ===== LOAD ===== */
+
+async function load(){
+
+    const r = await fetch(GITHUB_RAW_URL);
+    const text = await r.text();
+
+    const lines = text.split("\n").map(x=>x.trim());
+
+    const packName = lines[0];
+    const packDownload = lines[1];
+
+    const mods = lines.slice(2)
+        .filter(x=>x.includes("modrinth.com/mod/"));
+
+    packNameEl.textContent = packName;
+    packDownloadEl.href = packDownload;
+
+    container.innerHTML="";
+
+    for(const l of mods){
+        const m = await getMod(l);
+        if(m) card(m);
+    }
+}
+
+load();
+
+</script>
+
+</body>
+</html>
