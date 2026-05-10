@@ -1,5 +1,8 @@
-https://modrinth.com/mod/create
-https://modrinth.com/mod/create-aeronautics
-https://modrinth.com/mod/createaddition
-https://modrinth.com/mod/jei
-https://modrinth.com/mod/xaeros-minimap
+Aero Pack by Ratvad
+https://github.com/Ratvad/AeroPack/releases/latest/download/AeroPack.zip
+
+https://modrinth.com/mod/sodium
+https://modrinth.com/mod/lithium
+https://modrinth.com/mod/fabric-api
+https://modrinth.com/mod/iris
+https://modrinth.com/mod/indium
